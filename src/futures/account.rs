@@ -187,6 +187,32 @@ impl FuturesAccount {
         self.place_order(order).await
     }
 
+    // Place a STOP_MARKET close - SELL
+    pub async fn stop_market_close_sell<S, F>(&self, symbol: S, stop_price: F) -> Result<Transaction>
+    where
+        S: Into<String>,
+        F: Into<f64>,
+    {
+        let order = OrderRequest {
+            symbol: symbol.into(),
+            side: OrderSide::Sell,
+            position_side: None,
+            order_type: OrderType::StopMarket,
+            time_in_force: None,
+            quantity: None,
+            reduce_only: None,
+            price: None,
+            stop_price: Some(stop_price.into()),
+            close_position: Some(true),
+            activation_price: None,
+            callback_rate: None,
+            working_type: None,
+            price_protect: None,
+            new_client_order_id: None,
+        };
+        self.place_order(order).await
+    }
+
     // Place a MARKET order - SELL
     pub async fn market_sell<S, F>(&self, symbol: S, qty: F) -> Result<Transaction>
     where
